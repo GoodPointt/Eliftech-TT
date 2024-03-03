@@ -1,0 +1,25 @@
+{
+  "name": "eliftech-drug-stores-tt-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+    "install-all": "npm-run-all --parallel install-server install-client",
+    "build": "npm run build --prefix client",
+    "client:dev": "npm run dev --prefix client",
+    "server:dev": "npm run start:dev --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-server": "npm install --prefix server",
+    "install-client": "npm install --prefix client"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "nodemon": "^3.0.1",
+    "npm-run-all": "^4.1.5"
+  }
+}
