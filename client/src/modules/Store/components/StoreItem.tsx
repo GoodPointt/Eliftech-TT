@@ -4,14 +4,15 @@ import { Link } from 'react-router-dom';
 interface StoreItemProps extends FlexProps {
   children: React.ReactNode;
   _id: string;
+  currentStore: string;
 }
 
-const StoreItem = ({ children, _id }: StoreItemProps) => {
+const StoreItem = ({ children, _id, currentStore }: StoreItemProps) => {
   return (
     <Box
       as={Link}
       to={`?storeid=${_id}`}
-      style={{ textDecoration: 'none' }}
+      textDecoration={'none'}
       _focus={{ boxShadow: 'none' }}
     >
       <Flex
@@ -22,9 +23,11 @@ const StoreItem = ({ children, _id }: StoreItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: 'cyan.400',
-          color: 'white',
+          bg: 'blue.200',
+          color: '#000',
         }}
+        bgColor={currentStore === _id ? 'blue.700' : 'transparent'}
+        color={currentStore === _id ? '#fff' : '#000'}
       >
         {children}
       </Flex>

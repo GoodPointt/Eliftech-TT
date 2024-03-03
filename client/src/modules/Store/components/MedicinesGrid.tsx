@@ -15,8 +15,10 @@ const MedicinesGrid = () => {
   const [page, setPage] = useState<string>('1');
   const [, setCount] = useState<string>('');
   const [storeid, setStoreid] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortDir, setSortDir] = useState<string>('');
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { syncCart, cartItems } = useCart();
 
@@ -37,8 +39,10 @@ const MedicinesGrid = () => {
 
       const res = await fetchMedicines({
         page,
-        search: search,
+        search,
         storeid,
+        sortBy,
+        sortDir,
       });
 
       if (!res) {
@@ -48,14 +52,24 @@ const MedicinesGrid = () => {
 
       const { data, count } = res;
 
-      syncDataWithFavsAndCart(data);
+      const dataWithFavs = syncDataWithFavsAndCart(data);
 
-      setCount(count);
+      if (!sortBy) setMedicines(dataWithFavs);
+      else {
+        const sortedDataWidthFavs = sortDataWithFavs(dataWithFavs);
+        setMedicines(sortedDataWidthFavs);
+      }
+
+      if (count) {
+        const currentSearchParams = new URLSearchParams(location.search);
+        currentSearchParams.set('count', count);
+        setSearchParams(currentSearchParams.toString());
+      }
 
       setIsPending(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasCheked, search, storeid]);
+  }, [hasCheked, search, storeid, page, sortBy, sortDir]);
 
   useEffect(() => {
     if (hasCheked)
@@ -67,6 +81,8 @@ const MedicinesGrid = () => {
     setPage(searchParams.get('page') ?? '');
     setCount(searchParams.get('count') ?? '');
     setStoreid(searchParams.get('storeid') ?? '');
+    setSortBy(searchParams.get('sortBy') ?? '');
+    setSortDir(searchParams.get('sortDir') ?? '');
   }, [searchParams]);
 
   const handleFavorite = (id: string) => {
@@ -95,7 +111,7 @@ const MedicinesGrid = () => {
       prev.map((med) => {
         if (med._id === id) {
           if (!med.isCartItem) {
-            return { ...med, isCartItem: true };
+            return { ...med, isCartItem: true, count: 1 };
           } else return { ...med, isCartItem: false };
         } else return med;
       })
@@ -110,7 +126,16 @@ const MedicinesGrid = () => {
       return { ...item, isFavorite, isCartItem };
     });
 
-    setMedicines(dataWithFavs);
+    return dataWithFavs;
+  };
+
+  const sortDataWithFavs = (data: IMedicineData[]) => {
+    const favoriteMedicines = data.filter((medicine) => medicine.isFavorite);
+    const nonFavoriteMedicines = data.filter(
+      (medicine) => !medicine.isFavorite
+    );
+
+    return favoriteMedicines.concat(nonFavoriteMedicines);
   };
 
   if (!isPending && medicines.length > 0)

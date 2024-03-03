@@ -6,6 +6,8 @@ import Sidebar from './components/Sidebar';
 import MedicinesGrid from './components/MedicinesGrid';
 import { fetchStores } from '../../api/data';
 import { IStore } from '../../interfaces/store';
+import Pagination from './components/Pagination';
+import StoreToolbar from './components/StoreToolbar';
 
 export default function Store() {
   const [stores, setStores] = useState<IStore[]>([]);
@@ -40,8 +42,10 @@ export default function Store() {
       </Drawer>
       <MobileSidebar display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
       <Box as="section" ml={{ base: 0, md: 60 }} p="4">
+        <StoreToolbar />
         <MedicinesGrid />
       </Box>
+      <Pagination />
     </Box>
   );
 }

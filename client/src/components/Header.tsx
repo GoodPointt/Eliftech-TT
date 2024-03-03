@@ -35,9 +35,13 @@ const Header = () => {
   const [, setSearchParams] = useSearchParams();
 
   const handleSearch = useDebouncedCallback((e) => {
+    const currentSearchParams = new URLSearchParams(location.search);
     if (e.target.value) {
-      const currentSearchParams = new URLSearchParams(location.search);
       currentSearchParams.set('search', e.target.value);
+      currentSearchParams.set('page', '1');
+      setSearchParams(currentSearchParams.toString());
+    } else {
+      currentSearchParams.delete('search');
       currentSearchParams.set('page', '1');
       setSearchParams(currentSearchParams.toString());
     }
@@ -52,7 +56,7 @@ const Header = () => {
               navLinks.map((link, idx) => (
                 <ListItem
                   key={idx}
-                  _notLast={{ borderRight: '1px solid white' }}
+                  _notLast={{ borderRight: '1px solid #fff' }}
                   px={6}
                 >
                   <MainNavLink linkObj={link} />

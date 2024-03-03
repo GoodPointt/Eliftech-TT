@@ -19,9 +19,11 @@ import { useCart } from '../../../utils/hooks/useCart';
 const OrderForm = ({
   totalCartPrice,
   cartItems,
+  mapAddress,
 }: {
   totalCartPrice: number;
   cartItems: IMedicineData[];
+  mapAddress: string;
 }) => {
   const [orderData, setOrderData] = useState<IOrderData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -29,29 +31,6 @@ const OrderForm = ({
   const { wipeCart } = useCart();
 
   const toast = useToast();
-
-  useEffect(() => {
-    (async () => {
-      if (!orderData) return;
-      setIsSubmitting(true);
-      const res = await createOrder(orderData);
-      if (!res || res?.status !== 201)
-        toast({
-          title: 'An error occurred.',
-          description: 'Unable to create order.',
-          status: 'warning',
-        });
-      if (res?.status === 201)
-        toast({
-          title: 'Success!',
-          description: 'Order created.',
-          status: 'success',
-        });
-      wipeCart();
-      setOrderData(null);
-      setIsSubmitting(false);
-    })();
-  }, [orderData, toast, wipeCart]);
 
   const formik = useFormik({
     initialValues: {
@@ -65,15 +44,14 @@ const OrderForm = ({
         ...values,
         medicines: cartItems.map((item) => {
           const newItem = {
-            _id: item._id,
+            medicine: item._id,
             count: item.count,
           };
           return newItem;
         }),
-        totalPrice: totalCartPrice,
+        totalPrice: String(totalCartPrice.toFixed(1)),
       };
-      setOrderData(formData as IOrderData);
-      formik.resetForm();
+      setOrderData(formData);
     },
     validationSchema: Yup.object({
       username: Yup.string().required('Name cannot be empty'),
@@ -89,8 +67,40 @@ const OrderForm = ({
     }),
     validateOnChange: true,
   });
+
+  useEffect(() => {
+    formik.values.address = mapAddress;
+  }, [mapAddress]);
+
+  useEffect(() => {
+    (async () => {
+      if (!orderData) return;
+      setIsSubmitting(true);
+      const res = await createOrder(orderData);
+      if (!res || res?.status !== 201)
+        toast({
+          title: 'An error occurred.',
+          description: 'Unable to create order.',
+          status: 'warning',
+        });
+      if (res?.status === 201) {
+        toast({
+          title: 'Success!',
+          description: 'Order created.',
+          status: 'success',
+        });
+        formik.resetForm();
+        wipeCart();
+        setOrderData(null);
+      }
+
+      setIsSubmitting(false);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderData]);
+
   return (
-    <Box bg="white" w="full" p={8} borderRadius="lg">
+    <Box bg="white" borderRadius="lg" flex={1}>
       <form autoComplete="off" onSubmit={formik.handleSubmit}>
         <FormControl
           isInvalid={!!formik.touched.address && !!formik.errors.address}
@@ -187,7 +197,7 @@ const OrderForm = ({
         <Button
           type="submit"
           w="full"
-          bg="brand.green"
+          bg="green.200"
           size={'lg'}
           textTransform="uppercase"
           fontWeight={'normal'}
@@ -199,13 +209,7 @@ const OrderForm = ({
         >
           Create order
         </Button>
-        <Text
-          as="p"
-          fontSize="xs"
-          color="brand.grayishBlue"
-          mt={3}
-          textAlign="center"
-        >
+        <Text as="p" fontSize="xs" color="blue.600" mt={3} textAlign="center">
           By clicking the button, you are agreeing to our{' '}
           <Text as="a" fontWeight={'bold'} color="brand.red">
             Terms and Services

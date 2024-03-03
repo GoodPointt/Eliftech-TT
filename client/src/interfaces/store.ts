@@ -17,10 +17,12 @@ export interface IMedicineData {
 }
 
 export interface IOrderData {
+  _id?: string;
   address: string;
   email: string;
-  medicines: { _id: string; count: number }[];
+  medicines: { medicine: string | IMedicineData; count: number | undefined }[];
   phone: string;
-  totalPrice: number;
+  totalPrice: string;
   username: string;
+  createdAt?: Date;
 }

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { instance } from './instance';
 import { IOrderData } from '../interfaces/store';
-
-const LIMIT = '8';
+import { LIMIT } from '../common/limit';
+import { IFormData } from '../modules/Orders/Orders';
 
 export const fetchStores = async () => {
   try {
@@ -23,11 +23,28 @@ export const fetchMedicines = async ({
   page = '1',
   search = '',
   storeid = '',
+  sortBy = '',
+  sortDir = '',
 }) => {
   try {
     const { data } = await instance.get(
-      `/medicines?limit=${LIMIT}&page=${page}&query=${search}&byStore=${storeid}`
+      `/medicines?limit=${LIMIT}&page=${page}&query=${search}&byStore=${storeid}&sortBy=${sortBy}&sortDir=${sortDir}`
     );
+
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('fetchMedicines', error.status);
+      console.error('fetchMedicines', error.response);
+    } else {
+      console.error('fetchMedicines', error);
+    }
+  }
+};
+
+export const fetchOrders = async ({ email, phone }: IFormData) => {
+  try {
+    const data = await instance.get(`/orders?email=${email}&phone=${phone}`);
 
     return data;
   } catch (error) {

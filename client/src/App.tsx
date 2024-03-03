@@ -7,6 +7,7 @@ import NotFound from './pages/NotFound';
 
 const LazyStore = lazy(() => import('./pages/StorePage'));
 const LazyCart = lazy(() => import('./pages/CartPage'));
+const LazyHistory = lazy(() => import('./pages/HistoryPage'));
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<LazyStore />} />
         <Route path="cart" element={<LazyCart />} />
+        <Route path="history" element={<LazyHistory />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

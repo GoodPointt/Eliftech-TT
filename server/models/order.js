@@ -1,14 +1,15 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
+const { Medicine } = require('./medicine');
 
 const { handleMongooseError } = require('../utils');
 
 const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
 const orderedMedicinesSchema = new Schema({
-  _id: {
+  medicine: {
     type: Schema.Types.ObjectId,
-    ref: 'medicines',
+    ref: Medicine,
     required: true,
   },
   count: {
@@ -19,7 +20,7 @@ const orderedMedicinesSchema = new Schema({
 });
 
 const medicineSchema = Joi.object({
-  _id: Joi.string().required().messages({
+  medicine: Joi.string().required().messages({
     'string.base': `"medicine" should be a type of 'text'`,
     'string.empty': `"medicine" cannot be an empty field`,
     'any.required': `"medicine" is a required field`,

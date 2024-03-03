@@ -1,6 +1,7 @@
 import { Box, BoxProps, CloseButton, Flex, Text } from '@chakra-ui/react';
 import StoreItem from './StoreItem';
 import { IStore } from '../../../interfaces/store';
+import { useSearchParams } from 'react-router-dom';
 
 interface SidebarProps extends BoxProps {
   stores: IStore[];
@@ -8,6 +9,9 @@ interface SidebarProps extends BoxProps {
 }
 
 const Sidebar = ({ stores, onClose, ...rest }: SidebarProps) => {
+  const [searchParams] = useSearchParams();
+
+  const currentStore = searchParams.get('storeid') || '';
   return (
     <Box
       bgColor={'white'}
@@ -26,12 +30,16 @@ const Sidebar = ({ stores, onClose, ...rest }: SidebarProps) => {
       </Flex>
       <ul>
         <li key={Date.now()}>
-          <StoreItem _id={''}>All</StoreItem>
+          <StoreItem _id={''} currentStore={currentStore}>
+            All
+          </StoreItem>
         </li>
         {stores.length > 0 &&
           stores.map(({ name, _id }) => (
             <li key={_id}>
-              <StoreItem _id={_id}>{name}</StoreItem>
+              <StoreItem _id={_id} currentStore={currentStore}>
+                {name}
+              </StoreItem>
             </li>
           ))}
       </ul>

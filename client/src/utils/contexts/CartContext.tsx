@@ -22,7 +22,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addToCart = (item: IMedicineData) => {
-    const updatedItems = [...cartItems, item];
+    const updatedItems = [...cartItems, { ...item, count: 1 }];
     setCartItems(updatedItems);
     localStorage.setItem('localCart', JSON.stringify(updatedItems));
   };

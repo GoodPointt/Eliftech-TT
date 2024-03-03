@@ -7,8 +7,8 @@ const CartList = ({ totalCartPrice }: { totalCartPrice: number }) => {
 
   if (cartItems.length > 0)
     return (
-      <Flex flexDir={'column'}>
-        <List w="full">
+      <Flex flexDir={'column'} flex={1}>
+        <List w="full" display={'flex'} flexDir={'column'} gap={2}>
           {cartItems.map((item) => (
             <ListItem key={item._id}>
               <CartItem

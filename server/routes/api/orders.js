@@ -13,4 +13,6 @@ router.post(
   ctrl.createOrder
 );
 
+router.get('/', authenticate, ctrl.getOrders);
+
 module.exports = router;
