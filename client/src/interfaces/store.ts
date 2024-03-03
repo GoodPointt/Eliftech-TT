@@ -14,6 +14,7 @@ export interface IMedicineData {
   isCartItem: boolean;
   isNew?: boolean;
   count?: number;
+  createdAt: Date;
 }
 
 export interface IOrderData {

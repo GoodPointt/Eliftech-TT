@@ -5,6 +5,7 @@ import { fetchMedicines } from '../../../api/data';
 import { IMedicineData } from '../../../interfaces/store';
 import { useSearchParams } from 'react-router-dom';
 import { useCart } from '../../../utils/hooks/useCart';
+import { checkIsNew } from '../../../utils/helpers/checkIsNew';
 
 const MedicinesGrid = () => {
   const [medicines, setMedicines] = useState<IMedicineData[]>([]);
@@ -122,8 +123,9 @@ const MedicinesGrid = () => {
     const dataWithFavs = data.map((item) => {
       const isFavorite = favorites.some((fav) => fav === item._id);
       const isCartItem = cartItems.some(({ _id }) => _id === item._id);
+      const isNew = checkIsNew(item.createdAt);
 
-      return { ...item, isFavorite, isCartItem };
+      return { ...item, isFavorite, isCartItem, isNew };
     });
 
     return dataWithFavs;

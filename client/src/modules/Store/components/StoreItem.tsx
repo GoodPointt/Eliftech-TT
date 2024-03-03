@@ -5,15 +5,22 @@ interface StoreItemProps extends FlexProps {
   children: React.ReactNode;
   _id: string;
   currentStore: string;
+  onClose: () => void;
 }
 
-const StoreItem = ({ children, _id, currentStore }: StoreItemProps) => {
+const StoreItem = ({
+  children,
+  _id,
+  currentStore,
+  onClose,
+}: StoreItemProps) => {
   return (
     <Box
       as={Link}
       to={`?storeid=${_id}`}
       textDecoration={'none'}
       _focus={{ boxShadow: 'none' }}
+      onClick={onClose}
     >
       <Flex
         align="center"

@@ -140,7 +140,7 @@ function MedicineItem({
         </Box>
 
         <Box p="6">
-          <Box display="flex" alignItems="baseline">
+          <Box display="flex" alignItems="baseline" h={'10px'}>
             {isNew && (
               <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
                 New

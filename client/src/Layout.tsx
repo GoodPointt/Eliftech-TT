@@ -8,13 +8,17 @@ const Layout = () => {
   return (
     <Suspense fallback={null}>
       <Grid gridTemplateRows={'auto 1fr auto'} minH={'100dvh'}>
-        <Header />
+        <header>
+          <Header />
+        </header>
 
         <main>
           <Outlet />
         </main>
 
-        <Footer />
+        <footer>
+          <Footer />
+        </footer>
       </Grid>
     </Suspense>
   );

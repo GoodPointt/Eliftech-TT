@@ -30,14 +30,18 @@ const Sidebar = ({ stores, onClose, ...rest }: SidebarProps) => {
       </Flex>
       <ul>
         <li key={Date.now()}>
-          <StoreItem _id={''} currentStore={currentStore}>
+          <StoreItem _id={''} currentStore={currentStore} onClose={onClose}>
             All
           </StoreItem>
         </li>
         {stores.length > 0 &&
           stores.map(({ name, _id }) => (
             <li key={_id}>
-              <StoreItem _id={_id} currentStore={currentStore}>
+              <StoreItem
+                _id={_id}
+                currentStore={currentStore}
+                onClose={onClose}
+              >
                 {name}
               </StoreItem>
             </li>
