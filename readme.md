@@ -29,6 +29,7 @@ Create a `.env` file in the `client` folder with the following values:
 
 VITE_API_URL=http://localhost:5000/api
 VITE_API_TOKEN=wi8615CDgTI4R4AuVgGePakWJb8gVaRFKV7Hostj4dHRYWiPzS0btCV7dKmItOTZ
+VITE_GOOGLE_API_KEY=AIzaSyA_gokE1Q7eDebRvLkpsFvDsX11UG55z4A
 
 ### 6. Start Development Servers
 
