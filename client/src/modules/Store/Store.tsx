@@ -41,7 +41,13 @@ export default function Store() {
         </DrawerContent>
       </Drawer>
       <MobileSidebar display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Box as="section" ml={{ base: 0, md: 60 }} p="4">
+      <Box
+        as="section"
+        ml={{ base: 0, md: 60 }}
+        p="4"
+        // maxW={{ base: '744px', lg: '1000px', xl: '1300px' }}
+        height={'100%'}
+      >
         <StoreToolbar />
         <MedicinesGrid />
       </Box>

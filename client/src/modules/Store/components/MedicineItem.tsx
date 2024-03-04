@@ -75,7 +75,7 @@ function MedicineItem({
     <GridItem>
       <Box
         bg={'white'}
-        maxW="sm"
+        // maxW="sm"
         rounded="lg"
         shadow="lg"
         position="relative"
@@ -134,7 +134,7 @@ function MedicineItem({
             alt={`Picture of ${name}`}
             roundedTop="lg"
             h={'190px'}
-            w={'300px'}
+            w={'100%'}
             objectFit={'cover'}
           />
         </Box>

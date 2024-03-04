@@ -12,16 +12,16 @@ const MedicinesGrid = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isPending, setIsPending] = useState<boolean>(false);
   const [hasCheked, setHasCheked] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>('');
-  const [page, setPage] = useState<string>('1');
-  const [, setCount] = useState<string>('');
-  const [storeid, setStoreid] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('');
-  const [sortDir, setSortDir] = useState<string>('');
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { syncCart, cartItems } = useCart();
+
+  const search = searchParams.get('search') ?? '';
+  const page = searchParams.get('page') ?? '';
+  const storeid = searchParams.get('storeid') ?? '';
+  const sortBy = searchParams.get('sortBy') ?? '';
+  const sortDir = searchParams.get('sortDir') ?? '';
 
   useEffect(() => {
     const favsData = localStorage.getItem('localFavorites');
@@ -76,15 +76,6 @@ const MedicinesGrid = () => {
     if (hasCheked)
       localStorage.setItem('localFavorites', JSON.stringify(favorites));
   }, [favorites, hasCheked]);
-
-  useEffect(() => {
-    setSearch(searchParams.get('search') ?? '');
-    setPage(searchParams.get('page') ?? '');
-    setCount(searchParams.get('count') ?? '');
-    setStoreid(searchParams.get('storeid') ?? '');
-    setSortBy(searchParams.get('sortBy') ?? '');
-    setSortDir(searchParams.get('sortDir') ?? '');
-  }, [searchParams]);
 
   const handleFavorite = (id: string) => {
     setFavorites((prevFavorites) => {

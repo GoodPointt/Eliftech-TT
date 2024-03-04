@@ -1,4 +1,4 @@
-import { List, ListItem, Text } from '@chakra-ui/react';
+import { Flex, List, ListItem, Text } from '@chakra-ui/react';
 import SectionWrapper from '../../../components/SectionWrapper';
 import { IMedicineData, IOrderData } from '../../../interfaces/store';
 import CartItem from '../../Cart/components/CartItem';
@@ -17,16 +17,23 @@ const OrdersList = ({ orders }: { orders: IOrderData[] }) => {
             return (
               <ListItem
                 key={order._id}
-                border={'1px gray solid'}
+                border={'3px gray solid'}
                 borderRadius={'10px'}
                 alignItems={'center'}
               >
-                <Text>{createdAt}</Text>
-                <Text fontSize={'xl'} fontWeight={900} ml={'auto'} w={'200px'}>
-                  Total price: {Number(order.totalPrice).toFixed(1)}£
-                </Text>
+                <Flex justify={'space-around'} align={'center'} mb={'12px'}>
+                  <Text>{createdAt}</Text>
+                  <Text fontSize={'xl'} fontWeight={900}>
+                    Total price: {Number(order.totalPrice).toFixed(1)}£
+                  </Text>
+                </Flex>
                 {order.medicines.length > 0 && (
-                  <List display={'flex'} flexWrap={'wrap'}>
+                  <List
+                    display={'flex'}
+                    flexWrap={'wrap'}
+                    gap={'12px'}
+                    p={'10px'}
+                  >
                     {order.medicines.map((med) => {
                       const medOrderitem = {
                         ...(med.medicine as IMedicineData),

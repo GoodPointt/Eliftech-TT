@@ -56,7 +56,7 @@ const CartItem = ({
 
       <Stack data-type="Stack">
         <CardBody>
-          <Heading size="md">
+          <Heading size="md" textAlign={'left'}>
             {name} {!isCart ? 'x' + count : ''}
           </Heading>
           <Flex mt={'10px'} alignItems={'center'} gap={'20px'}>
@@ -75,7 +75,7 @@ const CartItem = ({
             )}
           </Flex>
           <Box>
-            <Text py="2" fontSize={'xl'} fontWeight={600}>
+            <Text py="2" fontSize={'xl'} fontWeight={600} textAlign={'left'}>
               Price: {(price * count).toFixed(1)}£
             </Text>
           </Box>

@@ -19,8 +19,8 @@ const SectionWrapper = ({
     >
       <Container
         maxW={{ base: '744px', lg: '1000px', xl: '1300px' }}
-        px="12px"
         height={'100%'}
+        px="12px"
       >
         {children}
       </Container>

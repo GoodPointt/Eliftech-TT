@@ -49,7 +49,7 @@ const Header = () => {
 
   return (
     <SectionWrapper color={'rgba(255, 255, 255, 0.87)'} bgColor={'#242424'}>
-      <Flex>
+      <Flex flexDir={{ base: 'column', lg: 'row' }}>
         <nav>
           <List display={'flex'}>
             {navLinks.length > 0 &&
@@ -65,7 +65,7 @@ const Header = () => {
           </List>
         </nav>
         {pathname === '/' && (
-          <InputGroup ml={'auto'} w={'200px'}>
+          <InputGroup ml={{ base: 'none', lg: 'auto' }} w={'200px'}>
             <InputLeftElement
               pointerEvents="none"
               color="gray.300"
