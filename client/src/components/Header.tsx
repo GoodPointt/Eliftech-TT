@@ -1,18 +1,11 @@
-import {
-  Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  List,
-  ListItem,
-} from '@chakra-ui/react';
+import { Flex, Link, List, ListItem } from '@chakra-ui/react';
 
 import SectionWrapper from './SectionWrapper';
-import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { TNavLink } from '../interfaces/navigation';
 import { navLinks } from '../common/navLinks';
-import { useDebouncedCallback } from 'use-debounce';
+
+import Search from './Search';
 
 const MainNavLink = ({ linkObj }: { linkObj: TNavLink }) => {
   return (
@@ -32,21 +25,6 @@ const MainNavLink = ({ linkObj }: { linkObj: TNavLink }) => {
 const Header = () => {
   const location = useLocation();
   const { pathname } = location;
-  const [, setSearchParams] = useSearchParams();
-
-  const handleSearch = useDebouncedCallback((e) => {
-    const currentSearchParams = new URLSearchParams(location.search);
-    if (e.target.value) {
-      currentSearchParams.set('search', e.target.value);
-      currentSearchParams.set('page', '1');
-      setSearchParams(currentSearchParams.toString());
-    } else {
-      currentSearchParams.delete('search');
-      currentSearchParams.set('page', '1');
-      setSearchParams(currentSearchParams.toString());
-    }
-  }, 300);
-
   return (
     <SectionWrapper color={'rgba(255, 255, 255, 0.87)'} bgColor={'#242424'}>
       <Flex flexDir={{ base: 'column', lg: 'row' }}>
@@ -64,27 +42,7 @@ const Header = () => {
               ))}
           </List>
         </nav>
-        {pathname === '/' && (
-          <InputGroup ml={{ base: 'none', lg: 'auto' }} w={'200px'}>
-            <InputLeftElement
-              pointerEvents="none"
-              color="gray.300"
-              fontSize="1.2em"
-            >
-              🔎
-            </InputLeftElement>
-            <Input
-              px={2}
-              py={'5px'}
-              variant={'unstyled'}
-              placeholder="Search by medicine name..."
-              type="search"
-              onChange={(e) => {
-                handleSearch(e);
-              }}
-            />
-          </InputGroup>
-        )}
+        {pathname === '/' && <Search />}
       </Flex>
     </SectionWrapper>
   );
