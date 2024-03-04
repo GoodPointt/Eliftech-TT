@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ErrorIcon } from '../../../assets/svg';
 import { IMedicineData, IOrderData } from '../../../interfaces/store';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { createOrder, generateCaptcah, sendCaptcha } from '../../../api/data';
 import { useCart } from '../../../utils/hooks/useCart';
 
@@ -22,10 +22,12 @@ const OrderForm = ({
   totalCartPrice,
   cartItems,
   mapAddress,
+  setMapAddress,
 }: {
   totalCartPrice: number;
   cartItems: IMedicineData[];
   mapAddress: string;
+  setMapAddress: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [orderData, setOrderData] = useState<IOrderData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -189,7 +191,10 @@ const OrderForm = ({
               name="address"
               placeholder="Address"
               value={formik.values.address}
-              onChange={formik.handleChange}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                setMapAddress(e.target.value);
+                formik.handleChange(e);
+              }}
             />
             {formik.touched.address && formik.errors.address && (
               <InputRightElement h="full" children={<ErrorIcon />} />

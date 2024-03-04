@@ -34,9 +34,10 @@ const Cart = () => {
             totalCartPrice={totalCartPrice}
             cartItems={cartItems}
             mapAddress={mapAddress}
+            setMapAddress={setMapAddress}
           />
         </Flex>
-        <GoogleMap setMapAddress={setMapAddress} />
+        <GoogleMap setMapAddress={setMapAddress} mapAddress={mapAddress} />
       </SectionWrapper>
     );
 

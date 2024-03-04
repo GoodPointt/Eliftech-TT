@@ -5,8 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 const StoreToolbar = () => {
   const [, setSearchParams] = useSearchParams();
   const [activeSort, setActiveSort] = useState({
-    sortBy: 'createdAt',
-    sortDir: 'asc',
+    sortBy: '',
+    sortDir: '',
   });
 
   const currentSearchParams = new URLSearchParams(location.search);

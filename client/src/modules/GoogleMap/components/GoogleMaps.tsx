@@ -1,26 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import { addClusterMarkers } from '../../../utils/helpers/addClusterMarkers';
 import { addSingleMarkers } from '../../../utils/helpers/addSingleMarker';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   fromLatLng,
   setKey,
   setLanguage,
   setLocationType,
 } from 'react-geocode';
+import { Box } from '@chakra-ui/react';
 
 const GOOGLE_API_KEY: string = import.meta.env.VITE_GOOGLE_API_KEY;
 setKey(GOOGLE_API_KEY);
 setLanguage('en');
 setLocationType('ROOFTOP');
 
-const DEFAULT_CENTER = { lat: 51.50590471372898, lng: -0.12980912474259243 };
 const DEFAULT_ZOOM = 10;
+const DEFAULT_CENTER = { lat: 51.49996043070496, lng: -0.19024171526197536 };
+let MAP: google.maps.Map | undefined;
 
 export const GoogleMaps = ({
   locations,
   useClusters = true,
   mapId,
   setMapAddress,
+  mapAddress,
 }: {
   locations: ReadonlyArray<{
     position: google.maps.LatLngLiteral;
@@ -29,8 +33,82 @@ export const GoogleMaps = ({
   setMapAddress: React.Dispatch<React.SetStateAction<string>>;
   useClusters?: boolean;
   mapId?: string;
+  mapAddress: string;
 }) => {
+  const [, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [destination, setDestination] =
+    useState<google.maps.LatLngLiteral>(DEFAULT_CENTER);
+
+  const directionsService = useRef<google.maps.DirectionsService | null>(null);
+  const directionsRenderer = useRef<google.maps.DirectionsRenderer | null>(
+    null
+  );
+
   const ref = useRef<HTMLDivElement | null>(null);
+  const geocoder = useRef<google.maps.Geocoder | null>(null);
+
+  const calculateAndDisplayRoute = (origin: string) => {
+    if (!directionsService.current || !directionsRenderer.current) return;
+
+    directionsService.current.route(
+      {
+        origin,
+        destination,
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (response, status) => {
+        if (status === 'OK') {
+          setDirections(response);
+
+          if (directionsRenderer.current) {
+            directionsRenderer.current.setDirections(response);
+          }
+        } else {
+          console.error('Directions request failed due to ' + status);
+        }
+      }
+    );
+  };
+
+  const getAddressFromLatLng = (
+    latLng: google.maps.LatLng,
+    markerTitle = ''
+  ) => {
+    fromLatLng(latLng.lat(), latLng.lng()).then(
+      (response) => {
+        const address = response.results[0].formatted_address;
+        setMapAddress(address);
+        calculateAndDisplayRoute(address);
+      },
+      (error) => {
+        console.error(error);
+        setMapAddress(('London, ' + markerTitle) as string);
+      }
+    );
+  };
+
+  const debouncedGeocode = useDebouncedCallback((address: string) => {
+    geocoder.current?.geocode({ address }, (results, status) => {
+      if (status === 'OK' && results && results.length > 0) {
+        const location = results[0].geometry
+          .location as unknown as google.maps.LatLngLiteral;
+        MAP?.setCenter(location);
+        // setCenter(location);
+      } else {
+        console.error(
+          'Geocode was not successful for the following reason:',
+          status
+        );
+        setMapAddress(address);
+      }
+    });
+  }, 300);
+
+  useEffect(() => {
+    if (mapAddress) {
+      debouncedGeocode(mapAddress);
+    }
+  }, [mapAddress, debouncedGeocode, setMapAddress]);
 
   useEffect(() => {
     if (ref.current) {
@@ -40,29 +118,35 @@ export const GoogleMaps = ({
         mapId,
         clickableIcons: true,
         heading: 1,
+        draggableCursor: 'false',
+      });
+      MAP = map;
+
+      geocoder.current = new window.google.maps.Geocoder();
+      directionsService.current = new window.google.maps.DirectionsService();
+      directionsRenderer.current = new window.google.maps.DirectionsRenderer({
+        map: map,
+      });
+
+      map.addListener('click', (event: google.maps.MapMouseEvent) => {
+        const clickedPosition = event.latLng;
+        if (clickedPosition) {
+          getAddressFromLatLng(clickedPosition);
+        }
       });
 
       const markers =
-        // useClusters
-        // ? addClusterMarkers({ locations, map })
-        // :
+        // useClusters ? addClusterMarkers({ locations, map }) :
         addSingleMarkers({ locations, map });
 
       markers.forEach((marker) => {
         marker.addListener('click', () => {
           const markerPosition = marker.getPosition();
-          const markerTitle = marker.getTitle();
           if (markerPosition) {
-            fromLatLng(markerPosition.lat(), markerPosition.lng()).then(
-              (response) => {
-                const address = response.results[0].formatted_address;
-                setMapAddress(address);
-              },
-              (error) => {
-                console.error(error);
-                setMapAddress(('London, ' + markerTitle) as string);
-              }
-            );
+            setDestination({
+              lat: markerPosition?.lat(),
+              lng: markerPosition?.lng(),
+            });
           }
         });
       });
@@ -70,5 +154,10 @@ export const GoogleMaps = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, mapId, locations, useClusters]);
 
-  return <div ref={ref} style={{ maxWidth: '100%', height: '700px' }} />;
+  useEffect(() => {
+    calculateAndDisplayRoute(mapAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [destination]);
+
+  return <Box ref={ref} maxW={{ base: '100%', lg: '49%' }} h={'300px'} />;
 };
