@@ -70,3 +70,34 @@ export const createOrder = async (orderData: IOrderData) => {
     }
   }
 };
+
+export const sendCaptcha = async (captchaData: {
+  captcha: string;
+  hash: string;
+}) => {
+  try {
+    const res = await instance.post('/captcha', captchaData);
+    return res;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('createOrder', error.status);
+      console.error('createOrder', error.response);
+    } else {
+      console.error('createOrder', error);
+    }
+  }
+};
+
+export const generateCaptcah = async () => {
+  try {
+    const res = await instance.get('/captcha');
+    return res;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('generateCaptcah', error.status);
+      console.error('generateCaptcah', error.response);
+    } else {
+      console.error('generateCaptcah', error);
+    }
+  }
+};

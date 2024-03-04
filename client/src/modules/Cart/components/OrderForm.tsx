@@ -1,6 +1,8 @@
 import {
   Box,
   Button,
+  Flex,
+  Image,
   Input,
   InputGroup,
   InputRightElement,
@@ -12,8 +14,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { ErrorIcon } from '../../../assets/svg';
 import { IMedicineData, IOrderData } from '../../../interfaces/store';
-import { useEffect, useState } from 'react';
-import { createOrder } from '../../../api/data';
+import { useEffect, useRef, useState } from 'react';
+import { createOrder, generateCaptcah, sendCaptcha } from '../../../api/data';
 import { useCart } from '../../../utils/hooks/useCart';
 
 const OrderForm = ({
@@ -27,10 +29,79 @@ const OrderForm = ({
 }) => {
   const [orderData, setOrderData] = useState<IOrderData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  const { wipeCart } = useCart();
+  const [isCaptchaSolved, setIsCaptchaSolved] = useState<boolean>(false);
+  const [captchaHash, setCaptchaHash] = useState<string>('');
+  const [captchaImg, setCaptchaImg] = useState<string>('');
+  const [captchaText, setCaptchaText] = useState<string>('');
 
   const toast = useToast();
+
+  const captchaInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    (async () => {
+      const newCaptcha = async () => {
+        const res = await generateCaptcah();
+
+        if (!res || res?.status !== 200)
+          return toast({
+            title: 'An error occurred.',
+            description: 'Unable to generate captcha.',
+            status: 'warning',
+          });
+
+        const {
+          data: { image, hash },
+        } = res;
+
+        setCaptchaImg(image);
+        setCaptchaHash(hash);
+      };
+
+      if (!captchaHash && !captchaImg) {
+        return await newCaptcha();
+      }
+      if (captchaHash && captchaImg && captchaText) {
+        const res = await sendCaptcha({
+          captcha: captchaText,
+          hash: captchaHash,
+        });
+
+        if (!res || res?.status !== 200)
+          return toast({
+            title: 'An error occurred.',
+            description: 'Unable to generate captcha.',
+            status: 'warning',
+          });
+
+        if (
+          res?.status === 200 &&
+          res?.data.message === 'Verification successful'
+        ) {
+          toast({
+            title: 'Success!',
+            description: res.data.message,
+            status: 'success',
+          });
+
+          return setIsCaptchaSolved(true);
+        }
+
+        if (res?.status === 200 && res?.data.message === 'Invalid captcha') {
+          toast({
+            title: 'Error!',
+            description: res.data.message,
+            status: 'warning',
+          });
+          if (captchaInput.current) captchaInput.current.value = '';
+          return await newCaptcha();
+        }
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [captchaText]);
+
+  const { wipeCart } = useCart();
 
   const formik = useFormik({
     initialValues: {
@@ -70,6 +141,7 @@ const OrderForm = ({
 
   useEffect(() => {
     formik.values.address = mapAddress;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapAddress]);
 
   useEffect(() => {
@@ -194,6 +266,39 @@ const OrderForm = ({
           )}
         </FormControl>
 
+        {!isCaptchaSolved && (
+          <Flex
+            mb={'20px'}
+            gap={'20px'}
+            flexDir={{ base: 'column', lg: 'row' }}
+          >
+            <Image src={captchaImg} />
+            <Flex
+              gap={'20px'}
+              mt={'auto'}
+              flexDir={{ base: 'column', lg: 'row' }}
+            >
+              <Input
+                py={3}
+                flex={1}
+                ref={captchaInput}
+                type="text"
+                placeholder="Enter captcha..."
+              />
+              <Button
+                py={3}
+                flex={1}
+                type="button"
+                onClick={() =>
+                  setCaptchaText(captchaInput.current?.value || '')
+                }
+              >
+                I'm not a robot
+              </Button>
+            </Flex>
+          </Flex>
+        )}
+
         <Button
           type="submit"
           w="full"
@@ -205,7 +310,7 @@ const OrderForm = ({
           boxShadow="0 3px hsl(154, 59%, 65%)"
           _hover={{ filter: 'brightness(0.9)' }}
           isLoading={isSubmitting}
-          isDisabled={isSubmitting}
+          isDisabled={isSubmitting || !isCaptchaSolved}
         >
           Create order
         </Button>

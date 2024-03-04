@@ -8,6 +8,7 @@ const healthRouter = require('./routes/api/health');
 const storesRouter = require('./routes/api/stores');
 const medicinesRouter = require('./routes/api/medicines');
 const ordersRouter = require('./routes/api/orders');
+const captchaRouter = require('./routes/api/captcha');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use('/api/health', healthRouter);
 app.use('/api/stores', storesRouter);
 app.use('/api/medicines', medicinesRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/captcha', captchaRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
