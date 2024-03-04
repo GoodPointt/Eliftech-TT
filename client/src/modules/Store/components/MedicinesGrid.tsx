@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import MedicineItem from './MedicineItem';
-import { Grid, Spinner, Text } from '@chakra-ui/react';
+import { Center, Grid, Spinner, Text } from '@chakra-ui/react';
 import { fetchMedicines } from '../../../api/data';
 import { IMedicineData } from '../../../interfaces/store';
 import { useSearchParams } from 'react-router-dom';
 import { useCart } from '../../../utils/hooks/useCart';
 import { checkIsNew } from '../../../utils/helpers/checkIsNew';
 
-const MedicinesGrid = () => {
+const MedicinesGrid = ({
+  isPending,
+  setIsPending,
+}: {
+  isPending: boolean;
+  setIsPending: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [medicines, setMedicines] = useState<IMedicineData[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [isPending, setIsPending] = useState<boolean>(false);
   const [hasCheked, setHasCheked] = useState<boolean>(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -149,7 +154,18 @@ const MedicinesGrid = () => {
       </Grid>
     );
 
-  if (isPending) return <Spinner size="xl" />;
+  if (isPending)
+    return (
+      <Center height={'320px'}>
+        <Spinner
+          thickness="15px"
+          speed="0.65s"
+          emptyColor="gray.300"
+          color="blue.500"
+          size="xl"
+        />
+      </Center>
+    );
   if (medicines.length === 0) return <Text size={'xl'}>Nothing found.</Text>;
 };
 

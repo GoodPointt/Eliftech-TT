@@ -12,6 +12,7 @@ import StoreToolbar from './components/StoreToolbar';
 export default function Store() {
   const [stores, setStores] = useState<IStore[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isPending, setIsPending] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -41,17 +42,11 @@ export default function Store() {
         </DrawerContent>
       </Drawer>
       <MobileSidebar display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-      <Box
-        as="section"
-        ml={{ base: 0, md: 60 }}
-        p="4"
-        // maxW={{ base: '744px', lg: '1000px', xl: '1300px' }}
-        height={'100%'}
-      >
+      <Box as="section" ml={{ base: 0, md: 60 }} p="4" height={'100%'}>
         <StoreToolbar />
-        <MedicinesGrid />
+        <MedicinesGrid isPending={isPending} setIsPending={setIsPending} />
       </Box>
-      <Pagination />
+      <Pagination isPending={isPending} />
     </Box>
   );
 }

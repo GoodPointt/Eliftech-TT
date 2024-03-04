@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { LIMIT } from '../../../common/limit';
 import { ImArrowLeft, ImArrowRight } from 'react-icons/im';
 
-const Pagination = () => {
+const Pagination = ({ isPending }: { isPending: boolean }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get('page') || '1');
@@ -24,7 +24,7 @@ const Pagination = () => {
     setSearchParams(currentSearchParams.toString());
   };
 
-  if (count <= limit) return null;
+  if (count <= limit || isPending) return null;
   else
     return (
       <Flex justify={'center'} gap={20} py={10}>
