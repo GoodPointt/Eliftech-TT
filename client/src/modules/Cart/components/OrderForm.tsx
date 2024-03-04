@@ -140,7 +140,10 @@ const OrderForm = ({
   });
 
   useEffect(() => {
-    formik.values.address = mapAddress;
+    formik.setValues((prevValues) => ({
+      ...prevValues,
+      address: mapAddress,
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapAddress]);
 
