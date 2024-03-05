@@ -115,16 +115,15 @@ export const GoogleMaps = ({
         const location = results[0].geometry
           .location as unknown as google.maps.LatLngLiteral;
         MAP?.setCenter(location);
-        // setCenter(location);
+        calculateAndDisplayRoute(address);
       } else {
         console.error(
           'Geocode was not successful for the following reason:',
           status
         );
-        setMapAddress(address);
       }
     });
-  }, 300);
+  }, 500);
 
   useEffect(() => {
     if (mapAddress) {
