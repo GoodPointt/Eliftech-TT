@@ -8,7 +8,7 @@ import {
   setLanguage,
   setLocationType,
 } from 'react-geocode';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 const GOOGLE_API_KEY: string = import.meta.env.VITE_GOOGLE_API_KEY;
 setKey(GOOGLE_API_KEY);
@@ -38,6 +38,7 @@ export const GoogleMaps = ({
   const [, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [destination, setDestination] =
     useState<google.maps.LatLngLiteral>(DEFAULT_CENTER);
+  const [duration, setDuration] = useState<string>('');
 
   const directionsService = useRef<google.maps.DirectionsService | null>(null);
   const directionsRenderer = useRef<google.maps.DirectionsRenderer | null>(
@@ -58,10 +59,31 @@ export const GoogleMaps = ({
       },
       (response, status) => {
         if (status === 'OK') {
-          setDirections(response);
+          if (response) {
+            setDirections(response);
 
-          if (directionsRenderer.current) {
-            directionsRenderer.current.setDirections(response);
+            if (directionsRenderer.current) {
+              directionsRenderer.current.setDirections(response);
+            }
+
+            const route = response.routes[0];
+            if (route) {
+              const leg = route.legs[0];
+              if (leg) {
+                const duration = leg.duration?.text;
+                if (duration) {
+                  setDuration(duration);
+                } else {
+                  console.error('Duration information not available.');
+                }
+              } else {
+                console.error('Leg information not available.');
+              }
+            } else {
+              console.error('Route information not available.');
+            }
+          } else {
+            console.error('Response is null or undefined.');
           }
         } else {
           console.error('Directions request failed due to ' + status);
@@ -159,5 +181,14 @@ export const GoogleMaps = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [destination]);
 
-  return <Box ref={ref} maxW={{ base: '100%', lg: '49%' }} h={'300px'} />;
+  return (
+    <Box maxW={{ base: '100%', lg: '49%' }}>
+      {duration && (
+        <Text textAlign={'right'} fontWeight={600}>
+          Approximately time: {duration}
+        </Text>
+      )}
+      <Box ref={ref} h={'300px'} />
+    </Box>
+  );
 };
