@@ -1,3 +1,25 @@
+## Realized functionality:
+- The Stores page where users can choose a drug store, then add medicines to the cart
+(get data from the database)
+- Add the ability to sort medicines by price and/or date added
+- Add the ability to mark medicines as favorites. The following drugs should be
+displayed first when sorting
+- The Cart page where the user can check all added products, remove some of them
+or change the count. And add an email, a phone number, and an address (in
+inputs)
+- The order should be saved in the database after the user clicks the “submit”
+button
+- The cart should be saved in local storage.
+- Add google maps
+- users can choose their address using a pin on the map or just enter an
+address and show it will be shown on the map
+- show a shop where the user ordered medicines from on the map
+- *(extra) show route from shop to user’s address and approximately time
+- *(extra) ask to enter a captcha after clicking on the “Create order” button
+- users can find their orders on History page using their email and phone number
+- additionaly added search medicine by name
+
+
 ## How to Run the Project Locally
 
 ### 1. Download or Clone Repository
