@@ -40,18 +40,18 @@ Run the following command to install both server and client packages:
 
 Create a `.env` file in the `server` folder with the following values:
 
-DB_HOST=mongodb+srv://drugs_user:ItCVfZAAZtOkM6zg@cluster0.esxmebl.mongodb.net/db-drugs?retryWrites=true&w=majority
-API_TOKEN=wi8615CDgTI4R4AuVgGePakWJb8gVaRFKV7Hostj4dHRYWiPzS0btCV7dKmItOTZ
-DEV_PORT=5000
-REQ_URL=http://localhost:5000/api/health
+DB_HOST=
+API_TOKEN=
+DEV_PORT=
+REQ_URL=
 
 ### 5. Configure Client Environment Variables
 
 Create a `.env` file in the `client` folder with the following values:
 
-VITE_API_URL=http://localhost:5000/api
-VITE_API_TOKEN=wi8615CDgTI4R4AuVgGePakWJb8gVaRFKV7Hostj4dHRYWiPzS0btCV7dKmItOTZ
-VITE_GOOGLE_API_KEY=AIzaSyA_gokE1Q7eDebRvLkpsFvDsX11UG55z4A
+VITE_API_URL=
+VITE_API_TOKEN=
+VITE_GOOGLE_API_KEY=
 
 ### 6. Start Development Servers
 
